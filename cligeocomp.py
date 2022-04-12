@@ -33,9 +33,9 @@ def get_func (strTemp):
 	return func
 
 def run_alg (func, localInput):
-	init = time.clock ()
+	init = time.clock()
 	cont, extra = geocomp.run_algorithm (func, localInput)
-	end = time.clock ()
+	end = time.clock()
 
 	delta = end - init
 
