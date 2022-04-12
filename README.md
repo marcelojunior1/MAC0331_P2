@@ -1,1 +1,1 @@
-# MAC0331_P2
+# Segundo Projeto: Detectar interseção de segmentos
