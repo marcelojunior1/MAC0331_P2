@@ -26,7 +26,7 @@ class RN:
             self.pai = None
             self.N = 0
             self.item = []
-            self.item[0] = item
+            self.item.append(item)
             self.indice_item = 0
 
     # Rotinas auxiliares ------------------------------------------------------------------------
@@ -95,7 +95,7 @@ class RN:
         global IMPRIMIR
 
         if raiz_arv is None:
-            raiz_arv = self.No(chave, PRETO)
+            raiz_arv = self.No(chave, PRETO, item)
             raiz_arv.N = 1
             raiz_arv.pai = None
             return raiz_arv
