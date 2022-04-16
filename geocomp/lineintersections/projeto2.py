@@ -18,12 +18,18 @@ Y = 1
 
 def Projeto2(l):
     print()
-    # Cria a arvore de segmentos
     arvore = RN()
 
     filter_segments(l)
     mergesort(0, len(l), l, X)
 
+    Varredura(l)
+
+# -------------------------------------------------------------------
+# Executa a linha de varredura do algoritmo
+
+def Varredura(l):
+    print("OK")
 
 # -------------------------------------------------------------------
 # Garante que as extremidades de um segmento estejam ordenadas
