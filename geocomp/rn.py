@@ -18,14 +18,16 @@ class RN:
 
     class No:
 
-        def __init__(self, chave, cor):
+        def __init__(self, chave, cor, item):
             self.chave = chave
             self.cor = cor
             self.esq = None
             self.dir = None
             self.pai = None
             self.N = 0
-            self.item = 1
+            self.item = []
+            self.item[0] = item
+            self.indice_item = 0
 
     # Rotinas auxiliares ------------------------------------------------------------------------
 
@@ -85,10 +87,10 @@ class RN:
 
     # Insercao ---------------------------------------------------------------------------------
 
-    def put_op(self, chave):
-        self.raiz = self.put(self.raiz, chave)
+    def put_op(self, chave, item):
+        self.raiz = self.put(self.raiz, chave, item)
 
-    def put(self, raiz_arv, chave):
+    def put(self, raiz_arv, chave, item):
         # TESTE
         global IMPRIMIR
 
@@ -118,11 +120,12 @@ class RN:
                             achou = True
                         else:
                             if chave == p.chave:
-                                p.item += 1
+                                p.indice_item += 1
+                                p.item[p.indice_item] = item
                                 return raiz_arv
 
         # Insere o no
-        novo = RN.No(chave, VERMELHO)
+        novo = RN.No(chave, VERMELHO, item)
         novo.pai = p
         if direito:
             p.dir = novo
