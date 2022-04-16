@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import math
 from random import randint
 import random
@@ -18,9 +21,9 @@ class RN:
         def __init__(self, chave, cor):
             self.chave = chave
             self.cor = cor
-            self.esq: RN.No = None
-            self.dir: RN.No = None
-            self.pai: RN.No = None
+            self.esq = None
+            self.dir = None
+            self.pai = None
             self.N = 0
             self.item = 1
 
@@ -270,6 +273,7 @@ class RN:
         return raiz_arv
 
     # Remocao ----------------------------------------------------------------------------------
+    
     def remove_op(self, chave):
         # TESTE
         global CONTROLE
@@ -284,7 +288,7 @@ class RN:
             # Definindo variaveis
             filhoDir = (no.pai.dir is no)
             pai = no.pai
-            irmao: RN.No
+            irmao = None
             if filhoDir:
                 irmao = no.pai.esq
             else:
@@ -610,36 +614,9 @@ class RN:
         self.verificar_pai(self.raiz)
 
 
+# TESTE
 
 if __name__ == '__main__':
-
-    """
-
-    arvore = RN()
-    
-    numbers = [97, 26, 24, 69, 88, 35, 47, 57, 63, 65]
-
-    for i in numbers:
-        arvore.put_op(i)
-
-    arvore.print_tree_op()
-    print("_------------")
-
-    arvore.remove_op(65)
-    arvore.remove_op(35)
-    arvore.remove_op(26)
-    arvore.remove_op(24)
-    arvore.remove_op(97)
-    arvore.remove_op(47)
-    arvore.remove_op(88)
-
-    arvore.print_tree_op()
-    arvore.verificar_pai_op()
-
-    #arvore.print_tree_op()
-    print("Resultado: ", arvore.balanceada_op())
-
-    """
 
 
     for a in range(1, 1000):
@@ -691,6 +668,3 @@ if __name__ == '__main__':
             exit(9)
         del arvore
     
-
-    """
-    """
