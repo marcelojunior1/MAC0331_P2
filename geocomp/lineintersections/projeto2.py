@@ -2,16 +2,21 @@ from geocomp.common import prim
 from geocomp.common import segment
 from geocomp.common import control
 from geocomp import config
+from geocomp.rn import RN
 import math
 
-# Constantes
 
+# Constantes
 X = 0
 Y = 1
 
+# -------------------------------------------------------------------
+# Chamada da funcao
 
 def Projeto2(l):
     print()
+    # Cria a arvore de segmentos
+    arvore = RN()
 
     filter_segments(l)
     mergesort(0,len(l), l, X)
@@ -19,6 +24,11 @@ def Projeto2(l):
     for x in range(len(l)):
         print(l[x])
 
+# -------------------------------------------------------------------
+# Verifica se dois segmentos se intersectao
+
+def intersecta(A: Pointer, B: Pointer):
+    
 
 
 
