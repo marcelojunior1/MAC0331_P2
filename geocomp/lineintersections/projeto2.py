@@ -11,6 +11,8 @@ import math
 # Constantes
 X = 0
 Y = 1
+PONTO = 0
+ESQ = 1
 
 
 # -------------------------------------------------------------------
@@ -18,18 +20,23 @@ Y = 1
 
 def Projeto2(l):
     print()
-    arvore = RN()
 
     filter_segments(l)
-    mergesort(0, len(l), l, X)
-
     Varredura(l)
+
 
 # -------------------------------------------------------------------
 # Executa a linha de varredura do algoritmo
 
 def Varredura(l):
-    print("OK")
+    fila_eventos = []
+
+    for i in range(len(l)):
+        fila_eventos.append([i, True])
+        fila_eventos.append([i, False])
+
+    mergesort(0, len(fila_eventos), fila_eventos, l, X)
+
 
 # -------------------------------------------------------------------
 # Garante que as extremidades de um segmento estejam ordenadas
@@ -70,42 +77,49 @@ def Intersecta(A: Segment, B: Segment):
 
 
 # -------------------------------------------------------------------
-# Ordenada uma lista l[p...r-1] de segmentos pela coordenada 'init.x'
+#
 
-def mergesort(p, r, l, eixo):
-    if (p < r - 1):
+def mergesort(p, r, fila, l, eixo):
+    if p < (r-1):
         q = math.floor((p + r) / 2)
 
-        mergesort(p, q, l, eixo)
-        mergesort(q, r, l, eixo)
-        intercala(p, q, r, l, eixo)
+        mergesort(p, q, fila, l, eixo)
+        mergesort(q, r, fila, l, eixo)
+        intercala(p, q, r, fila, l, eixo)
 
 
-def intercala(p, q, r, l, eixo):
+def intercala(p, q, r, fila, l, eixo):
     w = [None for i in range((r - p))]
 
     for i in range(p, q):
-        w[i - p] = l[i]
-
+        w[i - p] = fila[i]
     for j in range(q, r):
-        w[r - p + q - j - 1] = l[j]
+        w[r - p + q - j - 1] = fila[j]
 
     i = 0
-    j = r - p - 1
+    j = r-p-1
 
     for k in range(p, r):
-
         cond = False
 
         # Organizacao por X
         if eixo == X:
-            cond = (w[i].init.x < w[j].init.x) or (((w[i].init.x == w[j].init.x)) and w[i].init.y < w[j].init.y)
+            # cond = (w[i].init.x < w[j].init.x) or (((w[i].init.x == w[j].init.x)) and w[i].init.y < w[j].init.y)
+            i_1 = w[i][PONTO]
+            i_2 = w[j][PONTO]
+            ori_1 = w[i][ESQ]
+            ori_2 = w[j][ESQ]
+
+            p1 = l[i_1].init if ori_1 else l[i_1].to
+            p2 = l[i_2].init if ori_2 else l[i_2].to
+
+            cond = (p1.x < p2.x)
         else:
             print("Implementar se necessario")
 
-        if (cond):
-            l[k] = w[i]
+        if cond:
+            fila[k] = w[i]
             i += 1
         else:
-            l[k] = w[j]
+            fila[k] = w[j]
             j -= 1
