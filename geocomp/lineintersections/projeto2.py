@@ -11,7 +11,7 @@ import math
 # Constantes
 X = 0
 Y = 1
-PONTO = 0
+SEGM = 0
 ESQ = 1
 
 
@@ -20,6 +20,8 @@ ESQ = 1
 
 def Projeto2(l):
     print()
+    for i in range(len(l)):
+        print(i, l[i])
 
     filter_segments(l)
     Varredura(l)
@@ -29,13 +31,17 @@ def Projeto2(l):
 # Executa a linha de varredura do algoritmo
 
 def Varredura(l):
-    fila_eventos = []
+    # Cria a fila de eventos
+    fila = []
 
     for i in range(len(l)):
-        fila_eventos.append([i, True])
-        fila_eventos.append([i, False])
+        fila.append([i, True])
+        fila.append([i, False])
 
-    mergesort(0, len(fila_eventos), fila_eventos, l, X)
+    mergesort(0, len(fila), fila, l, X)
+
+    arvore = RN()
+
 
 
 # -------------------------------------------------------------------
@@ -105,8 +111,8 @@ def intercala(p, q, r, fila, l, eixo):
         # Organizacao por X
         if eixo == X:
             # cond = (w[i].init.x < w[j].init.x) or (((w[i].init.x == w[j].init.x)) and w[i].init.y < w[j].init.y)
-            i_1 = w[i][PONTO]
-            i_2 = w[j][PONTO]
+            i_1 = w[i][SEGM]
+            i_2 = w[j][SEGM]
             ori_1 = w[i][ESQ]
             ori_2 = w[j][ESQ]
 
