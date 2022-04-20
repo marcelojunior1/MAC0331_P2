@@ -3,6 +3,9 @@
 
 import math
 from random import randint
+from geocomp.common.point import Point
+from geocomp.common.prim import *
+from geocomp.common.segment import Segment
 import random
 
 PRETO = 0
@@ -13,8 +16,9 @@ IMPRIMIR = 0
 
 
 class RN:
-    def __init__(self):
+    def __init__(self, lista):
         self.raiz = None
+        self.lista = lista
 
     class No:
 
@@ -30,6 +34,20 @@ class RN:
             self.indice_item = 0
 
     # Rotinas auxiliares ------------------------------------------------------------------------
+
+    def retorna_chave(self):
+        print("NO: ", self.raiz.dir.chave)
+
+    def Esquerda(self, A: Segment, B: Segment):
+        tmp = area2(A.init, A.to, B.init)
+
+        if A.init.x < B.init.x:
+            return not (tmp > 0)
+
+        if tmp == 0:
+            print("Ponto sobre outro segmento", A, B)
+
+        return tmp >= 0
 
     def size(self, x: No):
         if x == None:
@@ -61,19 +79,25 @@ class RN:
         return False
 
     def get(self, raizArv: No, chave):
+
         if raizArv is None:
             return None
 
-        i = chave - raizArv.chave
+        if chave == raizArv.chave:
+            return raizArv
 
-        if i < 0:
+        A = self.lista[raizArv.chave]
+        B = self.lista[chave]
+
+        if chave == 2:
+            print("Esq: ", raizArv.chave, chave, self.Esquerda(A, B))
+
+        if self.Esquerda(A, B):
             return self.get(raizArv.esq, chave)
         else:
-            if i > 0:
-                return self.get(raizArv.dir, chave)
-            else:
-                return raizArv
+            return self.get(raizArv.dir, chave)
 
+    # Maximo e minimos da subarvore
     def fmax(self, no: No):
         if no.dir is None:
             return no
@@ -85,14 +109,23 @@ class RN:
             return no
         return self.fmin(no.esq)
 
+    # Maximo de um no
+    def max_min_no(self, chave):
+        no = self.get(self.raiz, chave)
+        if no is None:
+            print("Erro - Chave ", chave, " não encontrada")
+            exit(1)
+
+        pai = no.pai.chave if no.pai is not None else -1
+        min = no.esq.chave if no.esq is not None else -1
+
+        return pai, min
     # Insercao ---------------------------------------------------------------------------------
 
     def put_op(self, chave, item):
         self.raiz = self.put(self.raiz, chave, item)
 
     def put(self, raiz_arv, chave, item):
-        # TESTE
-        global IMPRIMIR
 
         if raiz_arv is None:
             raiz_arv = self.No(chave, PRETO, item)
@@ -104,25 +137,22 @@ class RN:
         achou = False
         direito = False
 
-        # Procura onde o no sera inserido
+        B = self.lista[chave]
+
         while not achou:
-            if (chave < p.chave) and (p.esq is not None):
+            A = self.lista[p.chave]
+
+            if self.Esquerda(A, B):
+                direito = False
+                if p.esq is None:
+                    break
                 p = p.esq
             else:
-                if (chave < p.chave) and (p.esq is None):
-                    achou = True
-                else:
-                    if (chave > p.chave) and (p.dir is not None):
-                        p = p.dir
-                    else:
-                        if (chave > p.chave) and (p.dir is None):
-                            direito = True
-                            achou = True
-                        else:
-                            if chave == p.chave:
-                                p.indice_item += 1
-                                p.item[p.indice_item] = item
-                                return raiz_arv
+                direito = True
+                if p.dir is None:
+                    break
+                p = p.dir
+
 
         # Insere o no
         novo = RN.No(chave, VERMELHO, item)
@@ -226,6 +256,7 @@ class RN:
                         continue
                     else:
                         if (p is avo.dir) and (filho is p.dir):
+
                             # Roda para esquerda
                             avo.dir = p.esq
                             if p.esq is not None:
@@ -276,13 +307,8 @@ class RN:
         return raiz_arv
 
     # Remocao ----------------------------------------------------------------------------------
-    
-    def remove_op(self, chave):
-        # TESTE
-        global CONTROLE
-        if chave == 50:
-            CONTROLE = True
 
+    def remove_op(self, chave):
         self.raiz = self.remove(self.raiz, chave)
 
     def checar(self, no: No):
@@ -347,7 +373,6 @@ class RN:
                     else:
                         avo.esq = irmao
 
-
                 if filhoDir:
                     no = pai.dir
                 else:
@@ -359,13 +384,14 @@ class RN:
             if (irmao.cor is PRETO) and (not self.filhosVermelhos(irmao)):
 
                 # Subrinho mais longe
-                if (filhoDir and (irmao.esq is not None) and irmao.esq.cor == VERMELHO) or ((not filhoDir) and (irmao.dir is not None) and (irmao.dir.cor == VERMELHO)):
+                if (filhoDir and (irmao.esq is not None) and irmao.esq.cor == VERMELHO) or (
+                        (not filhoDir) and (irmao.dir is not None) and (irmao.dir.cor == VERMELHO)):
 
                     corAux = irmao.cor
                     irmao.cor = irmao.pai.cor
                     irmao.pai.cor = corAux
 
-                    #Rotaciona
+                    # Rotaciona
                     if (filhoDir):
 
                         # Direita
@@ -409,7 +435,8 @@ class RN:
                     break
 
                 # Subrinho mais perto
-                if (filhoDir and (irmao.dir is not None) and irmao.dir.cor == VERMELHO) or (not filhoDir and (irmao.esq is not None) and irmao.esq.cor == VERMELHO):
+                if (filhoDir and (irmao.dir is not None) and irmao.dir.cor == VERMELHO) or (
+                        not filhoDir and (irmao.esq is not None) and irmao.esq.cor == VERMELHO):
 
                     # Encontra o filho vermelho
                     filho_v = None
@@ -492,6 +519,7 @@ class RN:
         no = self.get(raizArv, chave)
 
         if no is None:
+            print("RM: Chave ", chave, " não encontrada!")
             return self.raiz
 
         filhoDir = False
@@ -621,7 +649,6 @@ class RN:
 
 if __name__ == '__main__':
 
-
     for a in range(1, 1000):
         arvore = RN()
         numeros = []
@@ -642,8 +669,8 @@ if __name__ == '__main__':
         tam = len(numeros)
 
         for i in range(1, 100):
-            #print("Original")
-            #arvore.print_tree_op()
+            # print("Original")
+            # arvore.print_tree_op()
 
             k = random.choices(numeros, k=1)
 
@@ -659,7 +686,7 @@ if __name__ == '__main__':
                 exit()
 
             numeros.remove(k[0])
-            tam -=1
+            tam -= 1
 
             print("Removido: ", k)
 
@@ -670,4 +697,3 @@ if __name__ == '__main__':
             print("Erro tam", tam)
             exit(9)
         del arvore
-    
