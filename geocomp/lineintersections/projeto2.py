@@ -1,3 +1,6 @@
+# Arvore Rubro-negra baseada na implementacao do livro \
+# Introduction to Algorithms - 3rd ed. - Cormen, Leiserson, Rivest & Stein (2009)
+
 from geocomp.common import prim
 from geocomp.common import segment
 from geocomp.common import control
@@ -24,6 +27,7 @@ def Projeto2(l):
         print(i, l[i])
 
     filter_segments(l)
+
     Varredura(l)
 
 
@@ -40,8 +44,39 @@ def Varredura(l):
 
     mergesort(0, len(fila), fila, l, X)
 
-    arvore = RN()
+    arvore = RN(l)
 
+    for i in range(len(fila)):
+        print(i, fila[i])
+
+    for i in range(len(fila)):
+        intersecta = False
+        segm_intersecta = []
+        print(i)
+
+        if fila[i][ESQ]:
+            print("Insere: ", fila[i][SEGM])
+            # Insere na arvore de busca
+            arvore.put_op(fila[i][SEGM], -1)
+
+            # Testa com o predecessor e sucessor
+            #A, B = arvore.max_min_no(fila[i][SEGM])
+
+            #print("INTER: ", A, B)
+
+        else:
+            print("Remove: ", fila[i][SEGM])
+            # Remove e testa se os segmentos tem intercessao
+            #A, B = arvore.max_min_no(fila[i][SEGM])
+            #print("INTER: ", A, B)
+
+            arvore.remove_op(fila[i][SEGM])
+
+        arvore.print_tree_op()
+
+
+    print("----------------------------------")
+    #arvore.retorna_chave()
 
 
 # -------------------------------------------------------------------
@@ -61,6 +96,22 @@ def filter_segments(l):
 # -------------------------------------------------------------------
 # Funcoes
 
+def Esquerda_plus(a: Point, b: Point, c: Point):
+    return area2(a, b, c) > 0
+
+
+def Esquerda( A: Segment, B: Segment):
+    tmp = area2(A.init, A.to, B.init)
+
+    if A.init.x < B.init.x:
+        return not tmp > 0
+
+    if tmp == 0:
+        print("Ponto sobre outro segmento", A, B)
+
+    return tmp >= 0
+
+
 # Verifica se c esta no seguimento ab
 def Entre(a: Point, b: Point, c: Point):
     if not collinear(a, b, c):
@@ -73,9 +124,18 @@ def Entre(a: Point, b: Point, c: Point):
 
 
 # Verifica se dois segmentos se intersectao
-def Intersecta(A: Segment, B: Segment):
+def Intersecta_prop(A: Segment, B: Segment):
     if collinear(A.init, A.to, B.init) or collinear(A.init, A.to, B.to) or \
             collinear(B.init, B.to, A.init) or collinear(B.init, B.to, A.to):
+        return False
+
+    return (Esquerda_plus(A.init, A.to, B.init) ^ Esquerda_plus(A.init, A.to, B.to) )and \
+           (Esquerda_plus(B.init, B.to, A.init) ^ Esquerda_plus(B.init, B.to, A.to))
+
+
+def Intersecta(A: Segment, B: Segment):
+    if Intersecta_prop(A, B):
+        print("OK")
         return True
 
     return Entre(A.init, A.to, B.init) or Entre(A.init, A.to, B.to) or \
@@ -86,7 +146,7 @@ def Intersecta(A: Segment, B: Segment):
 #
 
 def mergesort(p, r, fila, l, eixo):
-    if p < (r-1):
+    if p < (r - 1):
         q = math.floor((p + r) / 2)
 
         mergesort(p, q, fila, l, eixo)
@@ -103,7 +163,7 @@ def intercala(p, q, r, fila, l, eixo):
         w[r - p + q - j - 1] = fila[j]
 
     i = 0
-    j = r-p-1
+    j = r - p - 1
 
     for k in range(p, r):
         cond = False
