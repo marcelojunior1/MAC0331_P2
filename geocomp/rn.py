@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Arvore Rubro-negra baseada na implementacao do livro \
+# Introduction to Algorithms - 3rd ed. - Cormen, Leiserson, Rivest & Stein (2009)
+
 import math
 from random import randint
 from geocomp.common.point import Point
