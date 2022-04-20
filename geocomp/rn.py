@@ -38,17 +38,11 @@ class RN:
 
     # Rotinas auxiliares ------------------------------------------------------------------------
 
-    def retorna_chave(self):
-        print("NO: ", self.raiz.dir.chave)
-
     def Esquerda(self, A: Segment, B: Segment):
         tmp = area2(A.init, A.to, B.init)
 
         if A.init.x < B.init.x:
             return not (tmp > 0)
-
-        if tmp == 0:
-            print("Ponto sobre outro segmento", A, B)
 
         return tmp >= 0
 
@@ -92,9 +86,6 @@ class RN:
         A = self.lista[raizArv.chave]
         B = self.lista[chave]
 
-        if chave == 2:
-            print("Esq: ", raizArv.chave, chave, self.Esquerda(A, B))
-
         if self.Esquerda(A, B):
             return self.get(raizArv.esq, chave)
         else:
@@ -117,7 +108,7 @@ class RN:
         no = self.get(self.raiz, chave)
         if no is None:
             print("Erro - Chave ", chave, " não encontrada")
-            exit(1)
+            return -1
 
         pai = no.pai.chave if no.pai is not None else -1
         min = no.esq.chave if no.esq is not None else -1
