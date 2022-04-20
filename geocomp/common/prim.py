@@ -13,11 +13,11 @@ Veja geocomp.convexhull.quickhull para um exemplo.
 
 ######## MORETTO #########
 COLIN_TOLERANCE = 10
-T  = 10 ** COLIN_TOLERANCE
+T = 10 ** COLIN_TOLERANCE
 T2 = 10.0 ** COLIN_TOLERANCE
 
 SMALLEST_NUM = 0.00000001
-INFINITY     = 100000
+INFINITY = 100000
 
 ############################
 
@@ -26,15 +26,18 @@ num_area2 = 0
 # Numero de vezes que a funcao dist2 foi chamada
 num_dist = 0
 
+
 def count_area2():
     global num_area2
     num_area2 = num_area2 + 1
 
-def area2 (a, b, c):
+
+def area2(a, b, c):
     "Retorna duas vezes a area do tringulo determinado por a, b, c"
     global num_area2
     num_area2 = num_area2 + 1
-    return (b.x - a.x)*(c.y - a.y) - (b.y - a.y)*(c.x - a.x)
+    return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x)
+
 
 def area_sign(a, b, c):
     area = area2(a, b, c)
@@ -44,66 +47,77 @@ def area_sign(a, b, c):
         return -1
     return 0
 
-def left (a, b, c):
+
+def left(a, b, c):
     "Verdadeiro se c est  esquerda do segmento orientado ab"
-    return area2 (a, b, c) > 0
+    return area2(a, b, c) > 0
 
-def left_on (a, b, c):
+
+def left_on(a, b, c):
     "Verdadeiro se c est  esquerda ou sobre o segmento orientado ab"
-    return area2 (a, b, c) >= 0
+    return area2(a, b, c) >= 0
 
-def collinear (a, b, c):
+
+def collinear(a, b, c):
     "Verdadeiro se a, b, c sao colineares"
-    return area2 (a, b, c) == 0
+    return area2(a, b, c) == 0
 
-def right (a, b, c):
+
+def right(a, b, c):
     "Verdadeiro se c est  direita do segmento orientado ab"
-    return not (left_on (a, b, c))
+    return not (left_on(a, b, c))
 
-def right_on (a, b, c):
+
+def right_on(a, b, c):
     "Verdadeiro se c est  direita ou sobre o segmento orientado ab"
-    return not (left (a, b, c))
+    return not (left(a, b, c))
 
-def dist2 (a, b):
+
+def dist2(a, b):
     "Retorna o quadrado da distancia entre os pontos a e b"
     global num_dist
     num_dist = num_dist + 1
     dy = b.y - a.y
     dx = b.x - a.x
 
-    return dy*dy + dx*dx
+    return dy * dy + dx * dx
 
-def get_count ():
+
+def get_count():
     "Retorna o numero total de operacoes primitivas realizadas"
     return num_area2 + num_dist
 
-def reset_count ():
+
+def reset_count():
     "Zera os contadores de operacoes primitivas"
     global num_area2, num_dist
     num_area2 = 0
     num_dist = 0
 
+
 def ccw_angle(u, v):
     if u is None or v is None:
         raise ValueError("Illegal argument of None type")
-    dot   = u[0] * v[0] + u[1] * v[1]
-    det   = u[0] * v[1] - u[1] * v[0]
+    dot = u[0] * v[0] + u[1] * v[1]
+    det = u[0] * v[1] - u[1] * v[0]
     theta = math.atan2(det, dot)
 
     if theta >= 0:
         return theta
     return 2.0 * math.pi + theta
 
+
 def cw_angle(u, v):
     if u is None or v is None:
         raise ValueError("Illegal argument of None type")
-    dot   = u[0] * v[0] + u[1] * v[1]
-    det   = u[0] * v[1] - u[1] * v[0]
+    dot = u[0] * v[0] + u[1] * v[1]
+    det = u[0] * v[1] - u[1] * v[0]
     theta = math.atan2(det, dot)
 
     if theta < 0:
         return 2 * math.pi + theta
     return theta
+
 
 def cross(u, v):
     if u is None or v is None:
@@ -129,18 +143,18 @@ def cross(u, v):
 
 def intersect(a, b, c, d):
     if a is None or \
-       b is None or \
-       c is None or \
-       d is None:
+            b is None or \
+            c is None or \
+            d is None:
         raise ValueError("Points must not be None")
 
     if intersect_prop(a, b, c, d):
         return True
 
     if on_segment(a, b, c) or \
-       on_segment(a, b, d) or \
-       on_segment(c, d, a) or \
-       on_segment(c, d, b):
+            on_segment(a, b, d) or \
+            on_segment(c, d, a) or \
+            on_segment(c, d, b):
         return True
     return False
 
@@ -153,24 +167,25 @@ def intersect(a, b, c, d):
 # interiores se tocam
 def intersect_prop(a, b, c, d):
     if a is None or \
-       b is None or \
-       c is None or \
-       d is None:
+            b is None or \
+            c is None or \
+            d is None:
         raise ValueError("Points must not be None")
 
     if collinear(a, b, c) or \
-       collinear(a, b, d) or \
-       collinear(a, c, d) or \
-       collinear(b, c, d):
+            collinear(a, b, d) or \
+            collinear(a, c, d) or \
+            collinear(b, c, d):
         return False
 
     return left(a, b, c) ^ left(a, b, d) and \
            left(c, d, a) ^ left(c, d, b)
 
+
 def on_segment(a, b, c):
     if a is None or \
-       b is None or \
-       c is None:
+            b is None or \
+            c is None:
         raise ValueError("Points must not be None")
 
     if not collinear(a, b, c):
@@ -185,14 +200,15 @@ def on_segment(a, b, c):
         b.y <= c.y <= a.y
 
 
-
 def dot(u, v):
     return u.x * v.x + u.y * v.y
+
 
 def perp(a, b):
     if a is None or b is None:
         raise ValueError("Illegal argument of None type")
     return a.x * b.y - a.y * b.x
+
 
 #### Beatriz & Igor ######
 
@@ -201,33 +217,37 @@ ERR = 1.0e-5
 
 
 def cmpFloat(a, b):
-	"Comparacao de float com margem de erro com preferencia para a igualdade"
-	if (abs(a-b) < ERR):
-		return 0
-	elif (a + ERR > b):
-		return 1
-	return -1
+    "Comparacao de float com margem de erro com preferencia para a igualdade"
+    if (abs(a - b) < ERR):
+        return 0
+    elif (a + ERR > b):
+        return 1
+    return -1
 
-def float_left (a, b, c):
-	"Verdadeiro se c est  esquerda do segmento orientado ab utilizando comparacao de float"
-	if(cmpFloat(area2 (a, b, c), 0) == 1):
-		return True
-	return False
 
-def float_left_on (a, b, c):
-	"Verdadeiro se c est  esquerda ou sobre o segmento orientado ab utilizando comparacao de float"
-	if(cmpFloat(area2 (a, b, c), 0) == 0):
-		return True
-	return False
+def float_left(a, b, c):
+    "Verdadeiro se c est  esquerda do segmento orientado ab utilizando comparacao de float"
+    if (cmpFloat(area2(a, b, c), 0) == 1):
+        return True
+    return False
+
+
+def float_left_on(a, b, c):
+    "Verdadeiro se c est  esquerda ou sobre o segmento orientado ab utilizando comparacao de float"
+    if (cmpFloat(area2(a, b, c), 0) == 0):
+        return True
+    return False
+
+
 ############
 
 
 ############ Moretto ##############
 def intersection_point(a, b, c, d):
     if a is None or \
-       b is None or \
-       c is None or \
-       d is None:
+            b is None or \
+            c is None or \
+            d is None:
         raise ValueError()
     u = b - a
     v = d - c
@@ -302,8 +322,8 @@ def intersection_dist2(p1, p2, edge):
 
 def segment_in_poly(a, b, poly):
     if a is None or \
-       b is None or \
-       poly is None:
+            b is None or \
+            poly is None:
         raise ValueError("Illegal argument of None type")
 
     v = poly.vertices()
@@ -346,11 +366,12 @@ def segment_in_poly(a, b, poly):
 
 
 def angle(p0, p1, p2):
-    a   = (p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2
-    b   = (p2[0] - p0[0]) ** 2 + (p2[1] - p0[1]) ** 2
-    c   = (p1[0] - p0[0]) ** 2 + (p1[1] - p0[1]) ** 2
+    a = (p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2
+    b = (p2[0] - p0[0]) ** 2 + (p2[1] - p0[1]) ** 2
+    c = (p1[0] - p0[0]) ** 2 + (p1[1] - p0[1]) ** 2
     cos = (a + c - b) / (2 * math.sqrt(a) * math.sqrt(c) + COLIN_TOLERANCE)
     return math.acos(int(cos * T) / T2)
+
 
 def intersection_dist2(p1, p2, edge):
     common = intersection_point(p1, p2, edge.p1, edge.p2)
@@ -361,4 +382,3 @@ def intersection_dist2(p1, p2, edge):
     return 0
 
 #################################3
-
