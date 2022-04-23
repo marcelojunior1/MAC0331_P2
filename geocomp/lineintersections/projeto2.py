@@ -22,13 +22,12 @@ SEGM = 0
 ESQ = 1
 
 K = 100
-seed(7)
-
 
 # -------------------------------------------------------------------
 # Chamada da funcao
 
 def Projeto2(l):
+    """
 
     filter_segments(l)
 
@@ -37,13 +36,14 @@ def Projeto2(l):
         print(i, l[i])
 
     Varredura(l)
+    print("FIm")
 
     """
 
     for i in range(10000):
         #print("TESTE: No ", i)
         t = []
-        for i in range(10):
+        for i in range(1000):
             c1 = randint(0, K)
             c2 = randint(0, K)
             c3 = randint(0, K)
@@ -59,7 +59,9 @@ def Projeto2(l):
         # Inicia o algoritmo de varredura
         Varredura(t)
         
-        """
+
+        
+
 
 
 # -------------------------------------------------------------------
@@ -85,11 +87,22 @@ def Varredura(l):
     arvore = RN(l)
 
     # Processa a fila de segmentos
+    control.sleep()
     for i in range(len(fila)):
+
         intersecta = False
         # print(i, "---------------------")
 
         segm_k = fila[i][SEGM]
+
+        segmento = l[segm_k]
+        x = 0
+        if fila[i][ESQ]:
+            x = segmento.init.x
+        else:
+            x = segmento.to.x
+
+        linha = control.plot_vert_line(x, "white", 1)
 
         segm_intersecta = []
         segm_intersecta.append(l[segm_k])
@@ -117,9 +130,16 @@ def Varredura(l):
                 l[A].plot()
 
             if B != -1 and not intersecta:
+                l[segm_k].hilight(color_line="blue")
+                l[B].hilight()
+                control.sleep()
+
                 intersecta = prim.intersect(l[segm_k].init, l[segm_k].to, l[B].init, l[B].to)
                 if intersecta:
                     segm_intersecta.append(l[B])
+
+                l[segm_k].plot()
+                l[B].plot()
 
         else:
             # print("Remove: ", fila[i][SEGM])
@@ -140,16 +160,12 @@ def Varredura(l):
             arvore.remove_op(fila[i][SEGM])
 
         # arvore.print_tree_op()
+        control.plot_delete(linha)
 
         if intersecta:
-            #print("Achou!")
-            #print(segm_intersecta)
+            segm_intersecta[0].hilight()
+            segm_intersecta[1].hilight()
             break
-
-        if (i == (len(fila)-1)) and not intersecta:
-            print("Não encontrou! ")
-            for k in range(len(l)):
-                print(l[k])
 
     #print("----------------------------------")
     # arvore.retorna_chave()
