@@ -3,6 +3,7 @@
     NUSP: 11222012
 
 """
+from random import randint, seed
 
 from geocomp.common import prim
 from geocomp.common import segment
@@ -20,25 +21,45 @@ Y = 1
 SEGM = 0
 ESQ = 1
 
+K = 100
+seed(7)
+
 
 # -------------------------------------------------------------------
 # Chamada da funcao
 
 def Projeto2(l):
-    print()
 
-    # Teste
-    """"
-    for i in range(len(l)):
-        print(i, l[i])
-    """
-
-    # Garante que o primeiro ponto do segemnto e o de menor
-    # coordenada X
     filter_segments(l)
 
-    # Inicia o algoritmo de varredura
+    print()
+    for i in range(len(l)):
+        print(i, l[i])
+
     Varredura(l)
+
+    """
+
+    for i in range(10000):
+        #print("TESTE: No ", i)
+        t = []
+        for i in range(10):
+            c1 = randint(0, K)
+            c2 = randint(0, K)
+            c3 = randint(0, K)
+            c4 = randint(0, K)
+
+            t.append(Segment(Point(c1, c2), Point(c3, c4)))
+
+        # Garante que o primeiro ponto do segemnto e o de menor
+        # coordenada X
+        filter_segments(t)
+
+
+        # Inicia o algoritmo de varredura
+        Varredura(t)
+        
+        """
 
 
 # -------------------------------------------------------------------
@@ -54,18 +75,19 @@ def Varredura(l):
     # Ordena a fila pela coordenada X
     mergesort(0, len(fila), fila, l, X)
 
-    # Cria a arvore de eventos
-    arvore = RN(l)
-
     # TESTE
-    """"
+    """
     for i in range(len(fila)):
         print(i, fila[i])
     """
 
+    # Cria a arvore de segmentos
+    arvore = RN(l)
+
+    # Processa a fila de segmentos
     for i in range(len(fila)):
         intersecta = False
-        # print(i)
+        # print(i, "---------------------")
 
         segm_k = fila[i][SEGM]
 
@@ -75,25 +97,29 @@ def Varredura(l):
         if fila[i][ESQ]:
             # print("Insere: ", fila[i][SEGM])
             # Insere na arvore de busca
-            arvore.put_op(fila[i][SEGM], -1)
+            arvore.put_op(fila[i][SEGM], None)
 
             A, B = arvore.max_min_no(segm_k)
+            # print("Teste: ", A, B)
 
             # Testa com o predecessor e sucessor
 
-            if A != -1:
+            if A != -1 and not intersecta:
+                l[segm_k].hilight(color_line="blue")
+                l[A].hilight()
+                control.sleep()
+
                 intersecta = prim.intersect(l[A].init, l[A].to, l[segm_k].init, l[segm_k].to)
                 if intersecta:
                     segm_intersecta.append(l[A])
-            else:
-                if not intersecta:
-                    if B != -1:
-                        intersecta = prim.intersect(l[segm_k].init, l[segm_k].to, l[B].init, l[B].to)
 
-                        if intersecta:
-                            segm_intersecta.append(l[B])
+                l[segm_k].plot()
+                l[A].plot()
 
-                # print("INTER: ", A, B)
+            if B != -1 and not intersecta:
+                intersecta = prim.intersect(l[segm_k].init, l[segm_k].to, l[B].init, l[B].to)
+                if intersecta:
+                    segm_intersecta.append(l[B])
 
         else:
             # print("Remove: ", fila[i][SEGM])
@@ -101,28 +127,31 @@ def Varredura(l):
 
             A, B = arvore.max_min_no(fila[i][SEGM])
 
-            if A != -1:
+            if A != -1 and not intersecta:
                 intersecta = prim.intersect(l[A].init, l[A].to, l[segm_k].init, l[segm_k].to)
                 if intersecta:
                     segm_intersecta.append(l[A])
-            else:
-                if not intersecta:
-                    if B != -1:
-                        intersecta = prim.intersect(l[segm_k].init, l[segm_k].to, l[B].init, l[B].to)
 
-                        if intersecta:
-                            segm_intersecta.append(l[B])
-
-                # print("INTER: ", A, B)
+            if B != -1 and not intersecta:
+                intersecta = prim.intersect(l[segm_k].init, l[segm_k].to, l[B].init, l[B].to)
+                if intersecta:
+                    segm_intersecta.append(l[B])
 
             arvore.remove_op(fila[i][SEGM])
 
+        # arvore.print_tree_op()
+
         if intersecta:
-            print("Achou!")
-            print(segm_intersecta)
+            #print("Achou!")
+            #print(segm_intersecta)
             break
 
-    print("----------------------------------")
+        if (i == (len(fila)-1)) and not intersecta:
+            print("Não encontrou! ")
+            for k in range(len(l)):
+                print(l[k])
+
+    #print("----------------------------------")
     # arvore.retorna_chave()
 
 
@@ -138,10 +167,6 @@ def filter_segments(l):
         elif (l[i].init.x == l[i].to.x):
             if (l[i].init.y > l[i].to.y):
                 l[i].init, l[i].to = l[i].to, l[i].init
-
-
-# -------------------------------------------------------------------
-# Funcoes
 
 
 # -------------------------------------------------------------------
@@ -180,7 +205,13 @@ def intercala(p, q, r, fila, l, eixo):
             p1 = l[i_1].init if ori_1 else l[i_1].to
             p2 = l[i_2].init if ori_2 else l[i_2].to
 
-            cond = (p1.x < p2.x)
+            cond = (p1.x <= p2.x)
+
+            if i_1 == i_2:
+                if ori_1:
+                    cond = True
+                else:
+                    cond = False
         else:
             print("Implementar se necessario")
 

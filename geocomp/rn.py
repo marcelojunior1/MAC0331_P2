@@ -38,13 +38,29 @@ class RN:
 
     # Rotinas auxiliares ------------------------------------------------------------------------
 
-    def Esquerda(self, A: Segment, B: Segment):
-        tmp = area2(A.init, A.to, B.init)
+    def print_filho(self):
+        print("Filho *********** ", self.raiz.dir.chave)
 
-        if A.init.x < B.init.x:
-            return not (tmp > 0)
+    def Esquerda(self, i, j):
 
-        return tmp >= 0
+        A = self.lista[i]
+        B = self.lista[j]
+
+        det = area2(A.init, A.to, B.init)
+
+        if A.init.x > B.init.x:
+            return not self.Esquerda(j, i)
+
+        if (A.init.x == B.init.x) and (j > i):
+            return not self.Esquerda(j, i)
+
+        if det == 0:
+            det = area2(A.init, A.to, B.to)
+
+            if det == 0:
+                return B.init.x > A.init.x
+
+        return det > 0
 
     def size(self, x: No):
         if x == None:
@@ -76,17 +92,13 @@ class RN:
         return False
 
     def get(self, raizArv: No, chave):
-
         if raizArv is None:
             return None
 
         if chave == raizArv.chave:
             return raizArv
 
-        A = self.lista[raizArv.chave]
-        B = self.lista[chave]
-
-        if self.Esquerda(A, B):
+        if self.Esquerda(raizArv.chave, chave):
             return self.get(raizArv.esq, chave)
         else:
             return self.get(raizArv.dir, chave)
@@ -105,15 +117,62 @@ class RN:
 
     # Maximo de um no
     def max_min_no(self, chave):
+        predecessor = -1
+        sucessor = -1
+
         no = self.get(self.raiz, chave)
+
         if no is None:
-            print("Erro - Chave ", chave, " não encontrada")
-            return -1
+            print("Erro ao encontrar a chave! : ", chave)
+            return -1, -1
 
-        pai = no.pai.chave if no.pai is not None else -1
-        min = no.esq.chave if no.esq is not None else -1
+        if no == self.raiz:
+            A = None
+            B = None
+            if no.esq is not None:
+                A = self.fmax(no.esq)
+            if no.dir is not None:
+                B = self.fmin(no.dir)
+            if A is not None:
+                predecessor = A.chave
+            if B is not None:
+                sucessor = B.chave
 
-        return pai, min
+            return sucessor, predecessor
+
+        # Encontra o sucessor
+        if no.dir is not None:
+            tmp = self.fmin(no.dir)
+            sucessor = tmp.chave
+        else:
+            pai = no.pai
+            filho = no
+            while pai is not None and (filho == pai.dir):
+                filho = pai
+
+                if pai.pai is not None:
+                    pai = pai.pai
+                else:
+                    break
+            sucessor = pai.chave
+
+        # Encontra o predecessor
+        if no.esq is not None:
+            tmp = self.fmax(no.esq)
+            predecessor = tmp.chave
+        else:
+            pai = no.pai
+            filho = no
+            while pai is not None and (filho == pai.esq):
+                filho = pai
+                if pai.pai is not None:
+                    pai = pai.pai
+                else:
+                    break
+            predecessor = pai.chave
+
+        return sucessor, predecessor
+
     # Insercao ---------------------------------------------------------------------------------
 
     def put_op(self, chave, item):
@@ -131,12 +190,10 @@ class RN:
         achou = False
         direito = False
 
-        B = self.lista[chave]
-
         while not achou:
             A = self.lista[p.chave]
 
-            if self.Esquerda(A, B):
+            if self.Esquerda(p.chave, chave):
                 direito = False
                 if p.esq is None:
                     break
@@ -146,7 +203,6 @@ class RN:
                 if p.dir is None:
                     break
                 p = p.dir
-
 
         # Insere o no
         novo = RN.No(chave, VERMELHO, item)
@@ -514,6 +570,7 @@ class RN:
 
         if no is None:
             print("RM: Chave ", chave, " não encontrada!")
+            exit(1)
             return self.raiz
 
         filhoDir = False
