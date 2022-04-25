@@ -10,7 +10,7 @@ A orientação ao percorrer a árvore não é definida do modo usual, ou seja, s
 
 >O ponto de início de **B** é colinear à **A**: Se um ponto de início pertence à reta de **A**, basta realizar o teste *Esquerda* em relação ao ponto final de **B**.
 
->Os dois pontos de **B** são colineares a **A**: Aqui o teste define quem está a esquerda pela coordenada X de seus pontos iniciais, em caso de empate, a posição em *l* torna-se o critério de desempate.
+>Os dois pontos de **B** são colineares à **A**: Aqui o teste define quem está a esquerda pela coordenada X de seus pontos iniciais, em caso de empate, a posição em *l* torna-se o critério de desempate.
 
 A linha de varredura é simulada percorrendo a fila de eventos e executando as operações já descritas, a cada operação a parte gráfica é acionada, seja alterando a posição da linha de varredura, ou mostrando os testes de interseção que são realizados. Ao final, os dois segmentos que se intersessionam aparecem marcados.
 
