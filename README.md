@@ -1,4 +1,4 @@
-# Segundo Projeto: Detectar interseção de segmentos
+## Detectar interseção de segmentos
 
 O segundo projeto detecta a intecessão de quaisquer dois segmentos em uma lista fornecida como entrada. Conforme o enunciado, o algoritmo de Shamos e Hoey foi implementado.
 
