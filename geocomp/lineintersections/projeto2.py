@@ -21,20 +21,14 @@ Y = 1
 SEGM = 0
 ESQ = 1
 
-K = 100
-
 # -------------------------------------------------------------------
 # Chamada da funcao
 
 def Projeto2(l):
-
     filter_segments(l)
 
-    print()
-    for i in range(len(l)):
-        print(i, l[i])
-
     Varredura(l)
+
 
 # -------------------------------------------------------------------
 # Executa a linha de varredura do algoritmo
@@ -49,21 +43,13 @@ def Varredura(l):
     # Ordena a fila pela coordenada X
     mergesort(0, len(fila), fila, l, X)
 
-    # TESTE
-    """
-    for i in range(len(fila)):
-        print(i, fila[i])
-    """
-
     # Cria a arvore de segmentos
     arvore = RN(l)
 
     # Processa a fila de segmentos
     control.sleep()
     for i in range(len(fila)):
-
         intersecta = False
-        # print(i, "---------------------")
 
         segm_k = fila[i][SEGM]
 
@@ -80,7 +66,6 @@ def Varredura(l):
         segm_intersecta.append(l[segm_k])
 
         if fila[i][ESQ]:
-            # print("Insere: ", fila[i][SEGM])
             # Insere na arvore de busca
             arvore.put_op(fila[i][SEGM], None)
 
@@ -114,33 +99,41 @@ def Varredura(l):
                 l[B].plot()
 
         else:
-            # print("Remove: ", fila[i][SEGM])
             # Remove e testa se os segmentos tem intercessao
-
             A, B = arvore.max_min_no(fila[i][SEGM])
 
             if A != -1 and not intersecta:
+                l[segm_k].hilight(color_line="blue")
+                l[A].hilight()
+                control.sleep()
+
                 intersecta = prim.intersect(l[A].init, l[A].to, l[segm_k].init, l[segm_k].to)
                 if intersecta:
                     segm_intersecta.append(l[A])
 
+                l[segm_k].plot()
+                l[A].plot()
+
             if B != -1 and not intersecta:
+                l[segm_k].hilight(color_line="blue")
+                l[B].hilight()
+                control.sleep()
+
                 intersecta = prim.intersect(l[segm_k].init, l[segm_k].to, l[B].init, l[B].to)
                 if intersecta:
                     segm_intersecta.append(l[B])
 
+                l[segm_k].plot()
+                l[B].plot()
+
             arvore.remove_op(fila[i][SEGM])
 
-        # arvore.print_tree_op()
         control.plot_delete(linha)
 
         if intersecta:
             segm_intersecta[0].hilight()
             segm_intersecta[1].hilight()
             break
-
-    #print("----------------------------------")
-    # arvore.retorna_chave()
 
 
 # -------------------------------------------------------------------
@@ -195,6 +188,8 @@ def intercala(p, q, r, fila, l, eixo):
 
             cond = (p1.x <= p2.x)
 
+            # Caso sejam o mesmo segmento,
+            # o ponto de inicio e inserido primeiro
             if i_1 == i_2:
                 if ori_1:
                     cond = True
