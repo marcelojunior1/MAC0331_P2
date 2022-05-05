@@ -27,7 +27,6 @@ K = 100
 # Chamada da funcao
 
 def Projeto2(l):
-    """
 
     filter_segments(l)
 
@@ -36,33 +35,6 @@ def Projeto2(l):
         print(i, l[i])
 
     Varredura(l)
-    print("FIm")
-
-    """
-
-    for i in range(10000):
-        #print("TESTE: No ", i)
-        t = []
-        for i in range(1000):
-            c1 = randint(0, K)
-            c2 = randint(0, K)
-            c3 = randint(0, K)
-            c4 = randint(0, K)
-
-            t.append(Segment(Point(c1, c2), Point(c3, c4)))
-
-        # Garante que o primeiro ponto do segemnto e o de menor
-        # coordenada X
-        filter_segments(t)
-
-
-        # Inicia o algoritmo de varredura
-        Varredura(t)
-        
-
-        
-
-
 
 # -------------------------------------------------------------------
 # Executa a linha de varredura do algoritmo
